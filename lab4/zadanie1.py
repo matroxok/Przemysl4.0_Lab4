@@ -4,37 +4,32 @@ import numpy as np
 import joblib
 from sklearn.linear_model import LinearRegression
 from sklearn.metrics import mean_squared_error
-from sensor import sensor_init, read_sensor  # Funkcje z poprzedniego laboratorium
+from sensor import sensor_init, read_sensor 
 
-
-# ---------- Czesc 1: zbieranie danych ----------
 
 def collect_data():
-    vl, dev = sensor_init()  # Inicjalizacja czujnika
-    data = []  # Lista do przechowywania danych
+    vl, dev = sensor_init() 
+    data = [] 
 
-    # Rozpoczecie pomiaru czasu - skala czasowa dla eksperymentu
     start_time = time.time()
     for _ in range(100):
-        # Odczyt wartosci odleglosci z czujnika
+
         distance, _ = read_sensor(vl, dev)
-        # Obliczenie aktualnego momentu eksperymentu
+
         experiment_time = time.time() - start_time
-        # Dodanie danych do listy
+
         data.append([experiment_time, distance])
-        # Wyswietlenie danych w konsoli dla monitorowania
+
         print(f"Time: {experiment_time:.2f}, Distance: {distance} mm")
-        # Opoznienie miedzy kolejnymi odczytami
+
         time.sleep(0.2)
 
-    # Tworzenie DataFrame z danych
+
     df = pd.DataFrame(data, columns=["time", "distance"])
-    # Zapisanie danych do pliku CSV
+
     df.to_csv("data.csv", index=False)
     return df
 
-
-# ---------- Czesc 2: trenowanie modelu regresji liniowej ----------
 
 def train_linear():
     df = pd.read_csv("data.csv")
@@ -45,7 +40,6 @@ def train_linear():
 
     X, y = [], []
 
-    # Przesuwajace sie okno: 5 pomiarow -> 6. pomiar
     for i in range(len(values) - WINDOW):
         X.append(values[i:i + WINDOW])
         y.append(values[i + WINDOW])
@@ -53,8 +47,6 @@ def train_linear():
     X = np.array(X)
     y = np.array(y)
 
-    # Podzial chronologiczny: 75 okien treningowych,
-    # 20 okien testowych.
     split = TRAIN_SIZE - WINDOW
 
     X_train, X_test = X[:split], X[split:]
