@@ -11,7 +11,6 @@ def tree_prediction(window, horizon):
     df = pd.read_csv("data.csv")
     values = df["distance"].to_numpy()
 
-    # Przesuwajace sie okno: "window" pomiarow -> kolejny pomiar
     X, y = [], []
     for i in range(len(values) - window):
         X.append(values[i:i + window])
@@ -20,7 +19,6 @@ def tree_prediction(window, horizon):
     X = np.array(X)
     y = np.array(y)
 
-    # Taki sam podzial chronologiczny jak w zadaniu 1
     split = TRAIN_SIZE - window
     X_train = X[:split]
     y_train = y[:split]
@@ -28,9 +26,6 @@ def tree_prediction(window, horizon):
     tree = DecisionTreeRegressor(max_depth=4, random_state=42)
     tree.fit(X_train, y_train)
 
-    # Predykcja "horizon" krokow w przod.
-    # Kazda przewidziana wartosc jest dopisywana do okna
-    # i uzywana do kolejnej prognozy.
     real_values = []
     predicted_values = []
 
@@ -42,7 +37,6 @@ def tree_prediction(window, horizon):
             prediction = tree.predict(last_values)[0]
             window_values.append(prediction)
 
-        # Porownujemy ostatnia przewidziana wartosc z rzeczywista
         predicted_values.append(window_values[-1])
         real_values.append(values[i + window + horizon - 1])
 
@@ -50,7 +44,6 @@ def tree_prediction(window, horizon):
     print(results)
     mse = mean_squared_error(real_values, predicted_values)
 
-    # Model z oknem 5 zapisujemy do uzycia w zadaniu 3
     if window == 5:
         joblib.dump(tree, "tree_model.pkl")
 
