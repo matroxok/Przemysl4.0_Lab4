@@ -1,7 +1,6 @@
 import ctypes
 
-# Sciezka do biblioteki skompilowanej na poprzednich zajeciach - podmien na swoja
-LIB_PATH = "/home/pi/dziku/lab3/vl6180_pi/libvl6180_pi.so"
+LIB_PATH = "/home/pi/vl6180_pi/libvl6180_pi.so"
 GAIN = 6
 
 
